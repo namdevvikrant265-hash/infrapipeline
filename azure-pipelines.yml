@@ -13,22 +13,20 @@ stages:
   jobs:
   - job: TerraformDeploy
     displayName: "Terraform Init Plan Apply"
-
     steps:
-
     - task: TerraformInstaller@1
       displayName: "Install Terraform"
       inputs:
         terraformVersion: 'latest'
-
     - task: TerraformTask@5
       displayName: "Terraform Init"
       inputs:
         provider: 'azurerm'
         command: 'init'
         backendServiceArm: 'vikrantscn'
+        backendAzureRmResourceGroupName: 'RG-DEV'
         backendAzureRmStorageAccountName: 'vikrantstorage9987'
-        backendAzureRmContainerName: 'infracontainer'
+        backendAzureRmContainerName: 'pravinnekramvikram'
         backendAzureRmKey: 'terraform.tfstate'
 
     - task: TerraformTask@5

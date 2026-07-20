@@ -2,20 +2,35 @@ trigger:
   branches:
     include:
       - main
+
 pool: vikrantagent
 
 stages:
-- stage: Terraform
-  displayName: "Terraform Infrastructure Deployment"
+- stage: Security_And_Deployment
+  displayName: "Gitleaks Scan & Terraform Infrastructure Deployment"
 
   jobs:
   - job: TerraformDeploy
-    displayName: "Terraform Init Plan Apply"
+    displayName: "Security Scan and Terraform Init Plan Apply"
     steps:
+    
+    # =================================================================
+    # STEP 1: GITLEAKS SECRET SECURITY SCAN (Before Terraform Execution)
+    # =================================================================
+    - powershell: |
+        Write-Host "Starting Gitleaks Secrets Analysis..."
+        C:\gitleaks\gitleaks.exe detect --no-git --verbose --redact
+      displayName: 'Run Gitleaks Security Scan'
+      continueOnError: false # Agar leak milega toh pipeline aage nahi badhegi
+
+    # =================================================================
+    # STEP 2: TERRAFORM INSTALLATION & EXECUTION
+    # =================================================================
     - task: TerraformInstaller@1
       displayName: "Install Terraform"
       inputs:
         terraformVersion: 'latest'
+
     - task: TerraformTask@5
       displayName: "Terraform Init"
       inputs:
@@ -41,4 +56,3 @@ stages:
         command: 'apply'
         commandOptions: '-auto-approve'
         environmentServiceNameAzureRM: 'vikrantscn'
-        

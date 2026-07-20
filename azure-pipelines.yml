@@ -17,11 +17,11 @@ stages:
     # =================================================================
     # STEP 1: GITLEAKS SECRET SECURITY SCAN (Before Terraform Execution)
     # =================================================================
-    - powershell: |
-        Write-Host "Starting Gitleaks Secrets Analysis..."
+    - script: |
+        echo "Starting Gitleaks Secrets Analysis..."
         C:\gitleaks\gitleaks.exe detect --no-git --verbose --redact
       displayName: 'Run Gitleaks Security Scan'
-      continueOnError: false # Agar leak milega toh pipeline aage nahi badhegi
+      continueOnError: false
 
     # =================================================================
     # STEP 2: TERRAFORM INSTALLATION & EXECUTION
